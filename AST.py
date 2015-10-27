@@ -5,29 +5,41 @@ class HNode:
 
     types = []
 
-    def getnode(text):
-        for i in types:
-            if i.match(text) == True:
-                return i.fromtext(types)
-
     def fromtext(text):
-        raise NotImplementedError()
-
-    def match(text):
-        raise NotImplementedError()
+        for t in types:
+            try:
+                return t.fromtext(text)
+            except:
+                pass
+        raise SyntaxError()
 
 class HList(HNode):
 
+    def __init__(self, children):
+        self.children = children
+
     def fromtext(text):
-        text = text[1:-1]
+
+        ilen = len(text)
+
         children = []
-        while len(text):
-            atom, size = (text)
-            children += atom
-            text = text[size:]
-            text.strip()
+        text.lstrip()
 
-        return HList(children)
+        if text[1] != '(':
+            raise SyntaxError()
 
-    def match(text):
-        pass
+        text = text[1:]
+        text.lstrip()
+
+        try:
+            while text[0] != ')':
+                atom, size = HNode.fromtext(text)
+                children += atom
+                text = text[size:]
+                text.lstrip()
+        except:
+            raise SyntaxError()
+
+        text = text[1:]
+
+        return ilen - len(text), HList(children)
