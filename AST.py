@@ -6,7 +6,7 @@ class HNode:
     types = []
 
     def fromtext(text):
-        for t in types:
+        for t in HNode.types:
             try:
                 return t.fromtext(text)
             except:
@@ -43,3 +43,56 @@ class HList(HNode):
         text = text[1:]
 
         return ilen - len(text), HList(children)
+HNode.types.append(HList)
+
+class HSymbol(HNode):
+
+    def __init__(self, symbol):
+        self.symbol = symbol
+
+    def fromtext(text):
+        t = text.split()[0].split(str=")")[0]
+        if not t in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ":
+            raise SyntaxError()
+        return len(t), HSymbol(t)
+HNode.types.append(HSymbol)
+
+class HNumber(HNode):
+
+    def __init__(self, value):
+        self.value = value
+
+    def fromtext(text):
+        ilen = len(text)
+        text.lstrip()
+        b = text.split()[0].split(str=")")[0]
+        if not b[0] in "0123456789":
+            raise SyntaxError()
+        return ilen - len(text) + len(b), int(b)
+HNode.types.append(HNumber)
+
+class HString(HNode):
+
+    def __init__(self, value):
+        self.value = value
+
+    def fromtext(text):
+        ilen = len(text)
+        text.lstrip()
+
+        if text[0] != '"':
+            raise SyntaxError()
+
+        text = text[1:]
+        res = None
+
+        for i in range(len(text)):
+            if text[i] == '"':
+                res = i
+                break
+
+        if res == None:
+            raise SyntaxError()
+
+        return 2 + i, HString(text[0:i])
+HNode.types.append(HString)
