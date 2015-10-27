@@ -1,0 +1,5 @@
+LHisp: HLisp interpreter
+========================
+
+LHisp is an interpreter for the HLisp lisp language. HLisp is a basic lisp
+variant.
