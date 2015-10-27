@@ -10,9 +10,11 @@ class scope:
 		self.prototype = prototype
 		self.objects = {}
 
-	def copyfrom(self, scope):
+	def copy(self):
+		new = scope.scope(self.prototype)
+
 		for name, val in scope.objects.items():
-			self.set(name, val.icopy())
+			new.set(name, val.copy())
 
 	def exists(self, name):
 		if name in self.objects:
@@ -36,8 +38,5 @@ class scope:
 
 		if self.prototype.exists(name):
 			return self.prototype.get(name)
-
-		if val == None:
-			raise Exception("Accessing undefined variable '{}'".format(name))
 
 		return val
