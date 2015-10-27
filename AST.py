@@ -19,13 +19,12 @@ class HNode:
 class HList(HNode):
 
     def fromtext(text):
-        text = text[1:-1]
+        text = text.strip()[1:-1]
         children = []
         while len(text):
             atom, size = (text)
             children += atom
-            text = text[size:]
-            text.strip()
+            text = text[size:].strip()
 
         return HList(children)
 
